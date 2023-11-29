@@ -1,0 +1,51 @@
+---
+title: "Code Book"
+author: "DaniGCFH"
+date: "2023-11-29"
+output: html_document
+---
+
+## Importing the documents 
+
+To simplify analysis, I loaded each of the provided files and gave them a unique name representative of its contents. It follows a simple logic:
+labels : for the labels document
+feat : for the features document
+starts with "test" or "train" : indicates from which set the document is pulled
+ends with "X" or "y" : indicates if within the set, the document represents the measurements (X) or the labels (y)
+ends with "_sub": indicates if within the set, the document represents subjects
+
+## Manipulation
+
+The first manipulation I made was to extract only the means and std from the features and assign it to a new variable I called meansd
+
+Then I named the columns in the X files as features and used meansd to only keep the relevant values. 
+
+The y documents were labeled with the labels document.
+
+Per training and test sets, I binded the data for subject, labels (y) and measurement (X).
+Finally I binded both training and test sets together to create the complete document data.
+
+
+## Assigning variable names
+
+The names were assigned according to the information already present in the column names. The first 3 columns designating the subject and the activities where manually introduced as "Subject", "Activity ID" and "Activity". For all other columns, the fonction gsub was used to replace specific strings with their descriptive counterpart. To choose which counterpart to use, I relied on the documentation provided which indicated specific abbreviations (such as "Acc") were meant to communicate specific measurements (acceleration). I applied this substitution logic to all the abbreviations I could find in the documentation provided. At the end, the column names were composed of 12 different descriptive parts:
+- Acceleration
+- Gyroscope
+- Magnitude
+- Time
+- Frequency
+- Mean
+- STD
+- Mean Frequency
+- Angle
+- Gravity
+- Body
+- Angular Velocity
+ 
+## Creating TidyData
+
+To create the tidy data I used the function aggregate to apply the function mean by subject and activity.
+The resulting data frame from this function had redundant columns, so I eliminated the redundancies and defined columns names to mantain the initial naming system.
+
+The resulting data frame was then written in a txt file.
+
