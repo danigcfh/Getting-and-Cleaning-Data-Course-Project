@@ -1,7 +1,7 @@
 
 library(data.table)
 library(dplyr)
-library(reshape2)
+
 
 #load general information about this database
 labels <- read.table("./Dataset/activity_labels.txt")[,2]
@@ -17,6 +17,12 @@ testy <- read.table("./Dataset/test/y_test.txt")
 trainx <- read.table("./Dataset/train/X_train.txt")
 trainy <- read.table("./Dataset/train/y_train.txt")
 
+#load subjects
+
+test_sub <- read.table("./Dataset/test/subject_test.txt")
+train_sub <- read.table("./Dataset/train/subject_train.txt")
+
+
 #set names columns to keep just the relevant data for the X files
 colnames(testx) <- feat
 testx <- testx[,meansd]
@@ -27,11 +33,6 @@ trainx <- trainx[,meansd]
 #set activity labels for y files
 testy$labels <- labels[testy$V1]
 trainy$labels <- labels[trainy$V1]
-
-#load subjects
-
-test_sub <- read.table("./Dataset/test/subject_test.txt")
-train_sub <- read.table("./Dataset/train/subject_train.txt")
 
 #bind all test and train data
 
@@ -63,7 +64,10 @@ names(data)<-gsub("Jerk", "Angular Velocity ", names(data))
 #finding the means using the function aggregate
 
 tidyData <- aggregate(x = data, by = list(data$Subject, data$Activity), FUN = "mean")
-tidyData <- tidyData[order(tidyData$Subject,tidyData$Activity),]
+tidyData <- tidyData[,c(-3,-5)]
+colnames(tidyData)[1:3] <- c("Subject", "Activity", "Activity ID")
+tidyData <- tidyData[order(tidyData$Subject,tidyData$`Activity ID`),]
+
 
 #write new database
 
